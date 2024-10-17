@@ -2,11 +2,9 @@ package com.anundjore.bank;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.anundjore.bank.*;
 import com.anundjore.bank.Model.AccountModel.Account;
+import com.anundjore.bank.Model.TransactionModel.Transaction;
 import com.anundjore.bank.Repository.BankAccountRepository;
-
 import jakarta.transaction.Transactional;
 
 @Service
@@ -17,14 +15,22 @@ public class BankService {
 
     @Transactional
     public void transfer(String sourceAccountNumber, String destinationAccountNumber, Double amount) {
-        Account source = bankAccountRepository.findByAccNumber(sourceAccountNumber);
-        Account destination = bankAccountRepository.findByAccNumber(destinationAccountNumber);
+        Long sourceId;
+        Long destinationId;
+        try {
+            sourceId = Long.parseLong(sourceAccountNumber);
+            destinationId = Long.parseLong(destinationAccountNumber);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid account number format");
+        }
+
+        Account source = bankAccountRepository.findById(sourceId).orElse(null);
+        Account destination = bankAccountRepository.findById(destinationId).orElse(null);
 
         if (source == null || destination == null) {
             throw new IllegalArgumentException("Account not found");
         }
 
-        // negative balance should return response 400
         if (source.getAvailableCash() < amount) {
             throw new IllegalArgumentException("Not enough money in source account");
         }
@@ -34,6 +40,6 @@ public class BankService {
 
         bankAccountRepository.save(source);
         bankAccountRepository.save(destination);
-    }
 
+    }
 }
