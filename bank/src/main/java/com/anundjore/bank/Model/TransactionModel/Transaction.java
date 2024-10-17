@@ -2,9 +2,8 @@ package com.anundjore.bank.Model.TransactionModel;
 
 import java.time.Instant;
 
-import org.hibernate.annotations.ManyToAny;
-
 import com.anundjore.bank.Model.AccountModel.Account;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,10 +27,12 @@ public class Transaction {
 
     @ManyToOne
     @JoinColumn(name = "source_account_id", referencedColumnName = "id")
+    @JsonManagedReference
     private Account sourceAccount;
 
     @ManyToOne
     @JoinColumn(name = "destination_account_id", referencedColumnName = "id")
+    @JsonManagedReference
     private Account destinationAccount;
 
     public Transaction() {

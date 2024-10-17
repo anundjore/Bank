@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import com.anundjore.bank.Model.AccountModel.Account;
 import com.anundjore.bank.Model.TransactionModel.Transaction;
 import com.anundjore.bank.Repository.BankAccountRepository;
+import com.anundjore.bank.Repository.TransactionRepository;
+import java.time.Instant;
+
 import jakarta.transaction.Transactional;
 
 @Service
@@ -13,8 +16,11 @@ public class BankService {
     @Autowired
     private BankAccountRepository bankAccountRepository;
 
+    @Autowired
+    private TransactionRepository transactionRepository;
+
     @Transactional
-    public void transfer(String sourceAccountNumber, String destinationAccountNumber, Double amount) {
+    public Transaction transfer(String sourceAccountNumber, String destinationAccountNumber, Double amount) {
         Long sourceId;
         Long destinationId;
         try {
@@ -40,6 +46,15 @@ public class BankService {
 
         bankAccountRepository.save(source);
         bankAccountRepository.save(destination);
+
+        Transaction transaction = new Transaction();
+        transaction.setSourceAccount(source);
+        transaction.setDestinationAccount(destination);
+        transaction.setCashAmount(amount);
+        transaction.setExecutedTime(Instant.now().toEpochMilli());
+        transaction.setSuccess(true);
+
+        return transactionRepository.save(transaction);
 
     }
 }
