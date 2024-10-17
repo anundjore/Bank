@@ -14,7 +14,7 @@ public class BankController {
     private BankService bankService;
 
     @PostMapping("/transfer")
-    public ResponseEntity<Transaction> transfer(
+    public ResponseEntity<?> transfer(
             @RequestParam String sourceAccount,
             @RequestParam String destinationAccount,
             @RequestParam Double amount) {
@@ -22,7 +22,7 @@ public class BankController {
             Transaction transaction = bankService.transfer(sourceAccount, destinationAccount, amount);
             return ResponseEntity.ok(transaction);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }
