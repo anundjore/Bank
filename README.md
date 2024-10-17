@@ -1,5 +1,5 @@
 # Bank
-Implementation of a REST API using Spring boot, H2 and Java. I used Spring initalizr to generate the 
+Implementation of a REST API using Spring boot, H2 and Java.
 
 ## Dependencies
 
